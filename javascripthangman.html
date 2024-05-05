@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hangman Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hangman Game</h1>
+  <div id="hangman-game">
+    <p>Welcome to Hangman!</p>
+    <p id="displayed-word"></p>
+    <p id="attempts"></p>
+    <input type="text" id="guess-input" placeholder="Guess a letter">
+    <button onclick="guessLetter()">Guess</button>
+  </div>
+
+  <script>
+    function chooseWord() {
+      const words = ["apple", "banana", "orange", "grape", "kiwi", "pineapple"];
+      return words[Math.floor(Math.random() * words.length)];
+    }
+
+    function displayWord(word, guessedLetters) {
+      let displayedWord = "";
+      for (let letter of word) {
+        if (guessedLetters.includes(letter)) {
+          displayedWord += letter;
+        } else {
+          displayedWord += "_";
+        }
+      }
+      return displayedWord;
+    }
+
+    let word = chooseWord();
+    let guessedLetters = [];
+    let attempts = 6;
+
+    document.getElementById("displayed-word").textContent = displayWord(word, guessedLetters);
+    document.getElementById("attempts").textContent = `Attempts left: ${attempts}`;
+
+    function guessLetter() {
+      const guessInput = document.getElementById("guess-input").value.toLowerCase();
+
+      if (guessedLetters.includes(guessInput)) {
+        alert("You've already guessed that letter.");
+      } else if (word.includes(guessInput)) {
+        guessedLetters.push(guessInput);
+        document.getElementById("displayed-word").textContent = displayWord(word, guessedLetters);
+      } else {
+        attempts--;
+        document.getElementById("attempts").textContent = `Attempts left: ${attempts}`;
+        if (attempts === 0) {
+          alert(`You're out of attempts! The word was: ${word}`);
+          resetGame();
+        }
+      }
+
+      if (!displayWord(word, guessedLetters).includes("_")) {
+        alert(`Congratulations! You guessed the word: ${word}`);
+        resetGame();
+      }
+
+      document.getElementById("guess-input").value = "";
+    }
+
+    function resetGame() {
+      word = chooseWord();
+      guessedLetters = [];
+      attempts = 6;
+      document.getElementById("displayed-word").textContent = displayWord(word, guessedLetters);
+      document.getElementById("attempts").textContent = `Attempts left: ${attempts}`;
+    }
+  </script>
+</body>
+</html>
